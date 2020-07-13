@@ -102,5 +102,81 @@ class Home extends Controller
 		$this->view('home/detail_order',$data);
 		$this->view('frontend/footer');
 	}
+	public function konfirmasi_order($id)
+	{
+		$data['order'] = $this->model('Admin_model')->editOrder($id);
+		
+		
+		$this->view('frontend/header');
+		$this->view('home/konfirmasi_order',$data);
+		$this->view('frontend/footer');
+	}
+	public function upload_bukti_tf()
+	{
+		// die('halo');
+		$data["POST"] = $_POST;
+		// var_dump($_FILES);
+		// die();
+		$data['gambar'] = $this->uploadImage($_FILES);
+
+		
+
+
+		if($this->model('Home_model')->putBuktiTransfer($data)>0){
+			Notifikasi::setFlash('Berhasil di Upload','Bukti Transfer', 'success');
+			header('Location:'.BASE_URL.'/home/profil_user/'.$data['POST']['id_order']);
+			exit;
+		}else{
+			Notifikasi::setFlash('Gagal di tambah','Testimoni', 'danger');
+			header('Location:'.BASE_URL.'/home/profil_user/'.$data['POST']['id_order']);
+		}
+	}
+
+	public function uploadImage($data)
+	{
+		
+		$namaFile = $data['foto']['name'];
+		$ukuranFile = $data['foto']['size'];
+		$error = $data['foto']['error'];
+		$tmpName = $data['foto']['tmp_name'];
+		
+		if($error === 4){
+			Notifikasi::setFlash('Gagal di tambah','Foto', 'danger');
+			header('Location:'.BASE_URL.$_SERVER['HTTP_REFERER']);
+		}
+
+		$ekstensiGambarValid = ['jpg','jpeg','png'];
+		$ekstensiGambar 	 = explode('.', $namaFile);
+		$ekstensiGambar = strtolower(end($ekstensiGambar));
+		//mencari nilai dalam array , hasilnya adalah true jika ada
+		if(!in_array($ekstensiGambar, $ekstensiGambarValid)){
+			Notifikasi::setFlash('Harus Bertipe Jpg, Jpeg, Png','Foto', 'danger');
+			header('Location:'. $_SERVER['HTTP_REFERER']);
+		}
+		if($ukuranFile > 1500000){
+			Notifikasi::setFlash('Melebihi Batas','Ukuran Foto', 'danger');
+			header('Location:'. $_SERVER['HTTP_REFERER']);
+		}
+
+		$namaFileBaru = uniqid();
+		$namaFileBaru .= ".".$ekstensiGambar;
+		// var_dump($namaFileBaru.".".$ekstensiGambar); die();
+		move_uploaded_file($tmpName, '../public/upload/testimoni/'.$namaFileBaru);
+
+		return $namaFileBaru;
+	}
+	public function batal_order($id)
+	{
+		if($this->model('Admin_model')->deleteOrder($id)>0){
+			Notifikasi::setFlash('Berhasil di Hapus','Order', 'danger');
+			header('Location:'.$_SERVER['HTTP_REFERER']);
+			exit;
+		}else{
+			Notifikasi::setFlash('Gagal di Hapus','Order', 'warning');
+			header('Location:'.$_SERVER['HTTP_REFERER']);
+		}
+	}
+
+
 
 }

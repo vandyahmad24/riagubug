@@ -32,6 +32,11 @@
                    <h6><?= $data['order']['harga']?></h6>
                 </div>
                  <hr>
+                 <div class="form-group">
+                  <label>Bukti Pembayaran :</label>
+                   <h6> <img src="<?= BASE_URL ?>/upload/testimoni/<?= $data['order']['bukti_pembayaran']?>" width="25%"></h6>
+                </div>
+                <hr>
                 <div class="form-group">
                   <label>Status :</label>
                    <h6><?= $data['order']['status']?></h6>

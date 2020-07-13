@@ -90,7 +90,7 @@ class Home_model{
 
 		
 		$query = "INSERT INTO tbl_order
-				  VALUES (null,:user_id,:produk_id,:alamat,:tanggal_foto,:no_wa,:tanggal_order,:status)";
+				  VALUES (null,:user_id,:produk_id,:alamat,:tanggal_foto,:no_wa,:tanggal_order,:status,:bukti_pembayaran)";
 
 		$this->db->query($query);
 		$this->db->bind('user_id', $data['id_pemesan']);
@@ -100,6 +100,7 @@ class Home_model{
 		$this->db->bind('no_wa', $data['no_wa']);
 		$this->db->bind('tanggal_order', $data['tanggal_pemesan']);
 		$this->db->bind('status', 'pending');
+		$this->db->bind('bukti_pembayaran', null);
 		$this->db->execute();
 		
 		return $this->db->rowCount();
@@ -113,5 +114,21 @@ class Home_model{
 
 	
 	}
+	public function putBuktiTransfer($data)
+	{
+		$id = $data["POST"]['id_order'];
+		$gambar = $data["gambar"];
+		
+		$query = "UPDATE tbl_order
+					SET bukti_pembayaran = '$gambar'
+					WHERE id = '$id'";
+		
+
+		$this->db->query($query);
+		$this->db->execute();
+
+		return $this->db->rowCount();
+	}
+	
 
 }

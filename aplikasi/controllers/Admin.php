@@ -176,7 +176,7 @@ class Admin extends Controller
 
 		if($error === 4){
 			Notifikasi::setFlash('Gagal di tambah','Foto', 'danger');
-			header('Location:'.BASE_URL.'/admin/addTestimoni');
+			header('Location:'.BASE_URL.$_SERVER['HTTP_REFERER']);
 		}
 
 		$ekstensiGambarValid = ['jpg','jpeg','png'];
@@ -313,6 +313,7 @@ class Admin extends Controller
 	public function daftar_order()
 	{
 		$data['order'] = $this->model('Admin_model')->getOrder();
+	
 
 		$this->view('backend/header');
 		$this->view('admin/order/daftar_order',$data);
